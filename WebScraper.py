@@ -1,6 +1,7 @@
 import requests  # http-requests
 from bs4 import BeautifulSoup  # scraping
 
+
 url = 'https://geizhals.de/?cat=tvlcd&xf=2728_DVB-S2%7E34_3840x2160%7E4546_55'
 
 headers = {
