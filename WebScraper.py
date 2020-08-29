@@ -22,4 +22,13 @@ def get_title():
         count += 1
 
 
-get_title()
+def get_price():
+    prices = soup.find_all('span', {'class': 'gh_price'})
+    count = 0
+    while count < len(prices):
+        price = float(prices[count].find('span').get_text(strip=True)[2:].replace(",", "."))
+        print(price)
+        count += 1
+
+
+get_price()
