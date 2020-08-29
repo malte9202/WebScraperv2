@@ -15,6 +15,10 @@ except mysql.Error as err:
         print('Database does not exist')
     else:
         print(err)
-else:
-    db.close()
 
+cursor = db.cursor()
+
+cursor.execute('SHOW DATABASES;')
+
+for x in cursor:
+    print(x)
