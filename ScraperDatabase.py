@@ -31,10 +31,16 @@ cursor.execute('CREATE TABLE IF NOT EXISTS prices (id INT AUTO_INCREMENT PRIMARY
 # for x in cursor:  # print current cursor
 #    print(x)
 
-
+'''
 def insert_product():
     insert_product_query = 'INSERT INTO products (title) VALUES (\'Test\');'
     cursor.execute(insert_product_query)
 
 
 insert_product()
+'''
+
+def insert_product(title: str):
+    insert_product_query = f'INSERT INTO products (title) VALUES {title}'
+    print(insert_product_query)
+    cursor.execute(insert_product_query)
