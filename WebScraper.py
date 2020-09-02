@@ -1,5 +1,6 @@
 import requests  # http-requests
 from bs4 import BeautifulSoup  # scraping
+from ScraperDatabase import *
 
 
 url = 'https://geizhals.de/?cat=tvlcd&xf=2728_DVB-S2%7E34_3840x2160%7E4546_55'
@@ -18,8 +19,11 @@ def get_title():
     count = 0
     while count < len(productlinks):
         title = productlinks[count].find('span').get_text(strip=True)
-        print(title)
+        insert_product(title)
         count += 1
+
+
+get_title()
 
 
 def get_price():
@@ -27,7 +31,7 @@ def get_price():
     count = 0
     while count < len(prices):
         price = float(prices[count].find('span').get_text(strip=True)[2:].replace(",", "."))
-        print(price)
+        insert_price(price, count+1)
         count += 1
 
 

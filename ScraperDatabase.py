@@ -32,7 +32,13 @@ cursor.execute('CREATE TABLE IF NOT EXISTS prices (id INT AUTO_INCREMENT PRIMARY
 
 
 def insert_product(title: str):
-    insert_product_query = 'INSERT INTO products (title) VALUES (%s);'
-    cursor.execute(insert_product_query, (title,))
+    insert_product_statement = 'INSERT INTO products (title) VALUES (%s);'
+    cursor.execute(insert_product_statement, (title,))
+    db.commit()
+
+
+def insert_price(price: float, product_id: int):
+    insert_price_statement = 'INSERT INTO prices (price, product_id) VALUES (%s, %s);'
+    cursor.execute(insert_price_statement, (price, product_id))
     db.commit()
 
