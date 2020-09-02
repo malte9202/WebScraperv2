@@ -22,30 +22,17 @@ cursor = db.cursor()
 # cursor.execute('CREATE DATABASE price_scraper;')  # just for initial DB create
 # cursor.execute('SHOW DATABASES;')  # check existing databases
 cursor.execute('CREATE TABLE IF NOT EXISTS products (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255));')
-'''
+
 cursor.execute('CREATE TABLE IF NOT EXISTS prices (id INT AUTO_INCREMENT PRIMARY KEY, '
                'product_id INT NOT NULL,'
                'scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, '
                'price FLOAT,'
                'FOREIGN KEY(product_id) REFERENCES products(id));')
 # cursor.execute('SHOW TABLES;')  # check if tables were created
-# for x in cursor:  # print current cursor
-#    print(x)
-
-
-def insert_product():
-    insert_product_query = 'INSERT INTO products (title) VALUES (\'Test\');'
-    cursor.execute(insert_product_query)
-
-
-insert_product()
-'''
 
 
 def insert_product(title: str):
-    insert_product_query = f'INSERT INTO products (title) VALUES (\'{title}\')'
-    print(insert_product_query)
-    cursor.execute(insert_product_query)
+    insert_product_query = 'INSERT INTO products (title) VALUES (%s);'
+    cursor.execute(insert_product_query, (title,))
+    db.commit()
 
-
-insert_product("test new solution come on")
