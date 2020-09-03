@@ -1,6 +1,5 @@
 import requests  # http-requests
 from bs4 import BeautifulSoup  # scraping
-from ScraperDatabase import *
 
 
 url = 'https://geizhals.de/?cat=tvlcd&xf=2728_DVB-S2%7E34_3840x2160%7E4546_55'
@@ -14,25 +13,29 @@ page = requests.get(url, headers=headers)
 soup = BeautifulSoup(page.content, 'html.parser')
 
 
-def get_title():
+def get_product_names():
     productlinks = soup.find_all('a', {'class': 'productlist__link'})
     count = 0
+    products = []
     while count < len(productlinks):
-        title = productlinks[count].find('span').get_text(strip=True)
-        insert_product(title)
+        product_name = productlinks[count].find('span').get_text(strip=True)
+        products.append(product_name)
         count += 1
+    return products
 
 
-get_title()
-
-
-def get_price():
+def get_prices(products):
     prices = soup.find_all('span', {'class': 'gh_price'})
     count = 0
+    products_prices = []
     while count < len(prices):
         price = float(prices[count].find('span').get_text(strip=True)[2:].replace(",", "."))
-        insert_price(price, count+1)
+        products_prices.append((products[count],price))
         count += 1
+    return products_prices
 
 
-get_price()
+def get_product_id(products, product_name):
+    product_id = products.index(product_name)
+    return product_id
+
