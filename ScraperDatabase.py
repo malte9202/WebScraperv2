@@ -16,7 +16,7 @@ def connect():
 
 
 connection = connect()
-cursor = connection.cursor()
+cursor = connection.cursor(buffered=True)
 
 
 def create_table():

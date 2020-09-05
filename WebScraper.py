@@ -38,4 +38,3 @@ def get_prices(products):
 def get_product_id(products, product_name):
     product_id = products.index(product_name)
     return product_id
-
