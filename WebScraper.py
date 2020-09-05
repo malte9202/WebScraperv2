@@ -35,4 +35,3 @@ def get_price():
         count += 1
 
 
-get_price()
