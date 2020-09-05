@@ -1,44 +1,54 @@
 import mysql.connector as mysql
-from mysql.connector import errorcode
 from settings import host, user, password, database
 
-try:
-    db = mysql.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database
-    )
-except mysql.Error as err:
-    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-        print('Something is wrong with your username or password')
-    elif err.errno == errorcode.ER_BAD_DB_ERROR:
-        print('Database does not exist')
-    else:
+
+def connect():
+    try:
+        db = mysql.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database
+        )
+        return db
+    except mysql.Error as err:
         print(err)
 
-cursor = db.cursor()
 
-# cursor.execute('CREATE DATABASE price_scraper;')  # just for initial DB create
-# cursor.execute('SHOW DATABASES;')  # check existing databases
-cursor.execute('CREATE TABLE IF NOT EXISTS products (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255));')
-
-cursor.execute('CREATE TABLE IF NOT EXISTS prices (id INT AUTO_INCREMENT PRIMARY KEY, '
-               'product_id INT NOT NULL,'
-               'scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, '
-               'price FLOAT,'
-               'FOREIGN KEY(product_id) REFERENCES products(id));')
-# cursor.execute('SHOW TABLES;')  # check if tables were created
+connection = connect()
+cursor = connection.cursor()
 
 
-def insert_product(title: str):
-    insert_product_statement = 'INSERT INTO products (title) VALUES (%s);'
-    cursor.execute(insert_product_statement, (title,))
-    db.commit()
+def create_table():
+    cursor.execute('CREATE TABLE IF NOT EXISTS prices (id INT AUTO_INCREMENT PRIMARY KEY, '
+                   'product_id INT NOT NULL,'
+                   'product_name VARCHAR(255),'
+                   'price FLOAT,'
+                   'scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);')
 
 
-def insert_price(price: float, product_id: int):
-    insert_price_statement = 'INSERT INTO prices (price, product_id) VALUES (%s, %s);'
-    cursor.execute(insert_price_statement, (price, product_id))
-    db.commit()
+def insert(product_id: int, product_name: str, price: float):
+    insert_statement = 'INSERT INTO prices (product_id, product_name, price) VALUES (%s, %s, %s);'
+    cursor.execute(insert_statement, (product_id, product_name, price))
+    connection.commit()
 
+
+def get_products():
+    get_products_query = 'SELECT product_name FROM prices;'
+    cursor.execute(get_products_query)
+    products = [product[0] for product in cursor.fetchall()]
+    return products
+
+
+def fetch_id_from_db(product):
+    get_product_id_query = 'SELECT product_id FROM prices WHERE product_name=%s;'
+    cursor.execute(get_product_id_query, (product,))
+    product_id = cursor.fetchone()[0]
+    return product_id
+
+
+def get_max_product_id():
+    get_max_id_query = 'SELECT MAX(product_id) FROM prices;'
+    cursor.execute(get_max_id_query)
+    max_id = cursor.fetchone()[0]
+    return max_id
