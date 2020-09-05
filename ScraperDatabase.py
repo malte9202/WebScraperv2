@@ -33,3 +33,22 @@ def insert(product_id: int, product_name: str, price: float):
     connection.commit()
 
 
+def get_products():
+    get_products_query = 'SELECT product_name FROM prices;'
+    cursor.execute(get_products_query)
+    products = [product[0] for product in cursor.fetchall()]
+    return products
+
+
+def fetch_id_from_db(product):
+    get_product_id_query = 'SELECT product_id FROM prices WHERE product_name=%s;'
+    cursor.execute(get_product_id_query, (product,))
+    product_id = cursor.fetchone()[0]
+    return product_id
+
+
+def get_max_product_id():
+    get_max_id_query = 'SELECT MAX(product_id) FROM prices;'
+    cursor.execute(get_max_id_query)
+    max_id = cursor.fetchone()[0]
+    return max_id
